@@ -85,7 +85,7 @@ sudo systemctl status alsa-controller.service
      CGroup: /system.slice/alsa-controller.service
              └─10256 /usr/local/bin/alsa-controller
 ```
-* check that the destniation control is being updated when the source control value changes (volume up/down)
+* check that the destination control is updated when the source control's value changes (volume up/down)
 ```
 sudo journalctl -u alsa-controller -f
 Oct 28 21:26:31 host alsa-controller[10256]: Event read L 81,R 81 (max 87) -> bass 192 (max 200)
