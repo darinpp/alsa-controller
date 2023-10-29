@@ -50,5 +50,44 @@ The value of the monitored control will be scaled appropriatelly for the updated
 
 So for example, running `alsa-controller "Speaker Playback Volume" "Speaker Digital Gain" 90` will map the source `0,1..87` into destinations `0,90..200`
 
-# TODO
-* Make it a systemd service
+# Run as a service
+* copy to `/usr/loca/bin` or some other location
+```
+sudo cp cmake-build-release/alsa-controller /usr/local/bin/
+```
+* create the service file
+```
+cat /etc/systemd/system/alsa-controller.service 
+[Unit]
+Description=alsa-controller
+After=syslog.target sound.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/alsa-controller
+
+[Install]
+WantedBy=multi-user.target
+```
+* enable and start the service
+```
+sudo systemctl daemon-reload
+sudo systemctl enable alsa-controller.service
+sudo systemctl start alsa-controller.service
+sudo systemctl status alsa-controller.service 
+● alsa-controller.service - alsa-controller
+     Loaded: loaded (/etc/systemd/system/alsa-controller.service; enabled; preset: enabled)
+     Active: active (running) since Sat 2023-10-28 21:20:16 PDT; 10min ago
+   Main PID: 10256 (alsa-controller)
+      Tasks: 1 (limit: 33342)
+     Memory: 488.0K
+        CPU: 121ms
+     CGroup: /system.slice/alsa-controller.service
+             └─10256 /usr/local/bin/alsa-controller
+```
+* check that the destniation control is being updated when the source control value changes (volume up/down)
+```
+sudo journalctl -u alsa-controller -f
+Oct 28 21:26:31 host alsa-controller[10256]: Event read L 81,R 81 (max 87) -> bass 192 (max 200)
+Oct 28 21:26:31 host alsa-controller[10256]: Event read L 78,R 78 (max 87) -> bass 188 (max 200)
+```
