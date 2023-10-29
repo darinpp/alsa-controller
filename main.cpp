@@ -2,8 +2,8 @@
 #include <alsa/asoundlib.h>
 
 static double min_dest = 90;
-static std::string src_name = "Speaker Playback Volume";
-static std::string dest_name = "Speaker Digital Gain";
+static std::string src_ascii_id = R"(name="Speaker Playback Volume")";
+static std::string dest_ascii_id = R"(iface=CARD,name="Speaker Digital Gain")";
 
 int volume_monitor (snd_hctl_elem_t *elem_src, unsigned int _) {
     int err;
@@ -58,15 +58,15 @@ int main(int argc, char **argv) {
         fprintf(stdout, "Usage:\n");
         fprintf(stdout, "  alsa-controller <src ctrl name> <dest ctrl name> <min dest volume>\n\n");
         fprintf(stdout, "Example:\n");
-        fprintf(stdout, R"(  alsa-controller "Speaker Playback Volume" "Speaker Digital Gain" 90)");
+        fprintf(stdout, R"(  alsa-controller name="Speaker Playback Volume" iface=CARD,name="Speaker Digital Gain" 90)");
         fprintf(stdout, "\n\n");
         return 0;
     }
     if (argc>1) {
-        src_name = argv[1];
+        src_ascii_id = argv[1];
     }
     if (argc>2) {
-        dest_name = argv[2];
+        dest_ascii_id = argv[2];
     }
     if (argc>3) {
         min_dest = strtod(argv[3], nullptr);
@@ -88,10 +88,14 @@ int main(int argc, char **argv) {
     snd_ctl_elem_id_t *id_dest;
     snd_ctl_elem_id_alloca(&id_src);
     snd_ctl_elem_id_alloca(&id_dest);
-    snd_ctl_elem_id_set_interface(id_src, SND_CTL_ELEM_IFACE_MIXER);
-    snd_ctl_elem_id_set_interface(id_dest, SND_CTL_ELEM_IFACE_MIXER);
-    snd_ctl_elem_id_set_name(id_src, src_name.c_str());
-    snd_ctl_elem_id_set_name(id_dest, dest_name.c_str());
+    if ((err = snd_ctl_ascii_elem_id_parse(id_src,src_ascii_id.c_str()))<0) {
+        fprintf(stderr, "Unable to find src elem with ascii id %s.\n",src_ascii_id.c_str());
+        return err;
+    }
+    if ((err = snd_ctl_ascii_elem_id_parse(id_dest,dest_ascii_id.c_str()))<0) {
+        fprintf(stderr, "Unable to find dest elem with id %s.\n",dest_ascii_id.c_str());
+        return err;
+    }
 
     snd_hctl_elem_t *elem_src = snd_hctl_find_elem(hctl, id_src);
     if (!elem_src) {
