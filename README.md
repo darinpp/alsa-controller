@@ -22,7 +22,7 @@ Usage:
   alsa-controller <src ctrl name> <dest ctrl name> <min dest volume>
 
 Example:
-  alsa-controller "Speaker Playback Volume" "Speaker Digital Gain" 90
+  alsa-controller name="Speaker Playback Volume" iface=CARD,name="Speaker Digital Gain" 90
 ```
 
 # Usage
@@ -41,14 +41,14 @@ numid=7,iface=MIXER,name='Speaker Playback Volume'
 ```
 ```
 amixer cget numid=3
-numid=3,iface=MIXER,name='Speaker Digital Gain'
+numid=3,iface=CARD,name='Speaker Digital Gain'
   ; type=INTEGER,access=rw---R--,values=1,min=0,max=200,step=0
   : values=177
   | dBscale-min=-100.00dB,step=1.00dB,mute=0
 ```
 The value of the monitored control will be scaled appropriatelly for the updated control. The maximum value of the source will always map to the maximum value of the destination. If the source value is zero the destination value will be set to zero too. If the destination control needs to start at a higher value then the third argument will allow this.
 
-So for example, running `alsa-controller "Speaker Playback Volume" "Speaker Digital Gain" 90` will map the source `0,1..87` into destinations `0,90..200`
+So for example, running `alsa-controller name="Speaker Playback Volume" iface=CARD,name="Speaker Digital Gain" 90` will map the source `0,1..87` into destinations `0,90..200`
 
 # Run as a service
 * copy to `/usr/loca/bin` or some other location
