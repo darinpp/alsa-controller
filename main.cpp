@@ -6,10 +6,6 @@ using namespace args;
 using namespace std;
 
 static double min_dest = 90;
-static string src_ascii_id = R"(name="Speaker Playback Volume")";
-static string src_hw = "hw:1";
-static std::string dest_ascii_id = R"(iface=CARD,name="Speaker Digital Gain")";
-static std::string dest_hw = "hw:1";
 
 int volume_monitor (snd_hctl_elem_t *elem_src, unsigned int _) {
     int err;
@@ -94,9 +90,10 @@ Flags:
     parser.option("dest_hw","");
     parser.parse(argc,argv);
 
-    src_ascii_id = parser.value("src");
-    src_hw = parser.value("src_hw");
-    dest_ascii_id = parser.value("dest");
+    auto src_ascii_id = parser.value("src");
+    auto src_hw = parser.value("src_hw");
+    auto dest_ascii_id = parser.value("dest");
+    string dest_hw;
     if (parser.found("dest_hw"))
         dest_hw = parser.value("dest_hw");
     else
