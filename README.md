@@ -64,7 +64,7 @@ numid=3,iface=CARD,name='Speaker Digital Gain'
   : values=177
   | dBscale-min=-100.00dB,step=1.00dB,mute=0
 ```
-The value of the monitored control will be scaled appropriatelly for the updated control. The maximum value of the source will always map to the maximum value of the destination. If the source value is zero the destination value will be set to zero too. If the destination control needs to start at a higher value then the third argument will allow this.
+The value of the monitored control will be scaled appropriatelly for the updated control. The maximum value of the source will always map to the maximum value of the destination. If the source value is zero the destination value will be set to zero too. If the destination control needs to start at a higher value then using `-m,--min_dest` will allow this.
 
 So for example, running `alsa-controller -m 90` will map the source `0,1..87` into destinations `0,90..200`
 
