@@ -19,10 +19,28 @@ Test
 ```
 ./cmake-build-release/alsa-controller -h
 Usage:
-  alsa-controller <src ctrl name> <dest ctrl name> <min dest volume>
+  alsa-controller [flags]
 
 Example:
-  alsa-controller name="Speaker Playback Volume" iface=CARD,name="Speaker Digital Gain" 90
+  alsa-controller -s name="Speaker Playback Volume" -d iface=CARD,name="Speaker Digital Gain" -m 90
+
+Flags:
+  -s, --src string          Id of the source control. It will be monitors and its changes will trigger a change in the destination control.
+                            (default: name="Speaker Playback Volume")
+
+  -d, --dest string         Id of the destination control. It will be updated each time the source is updated.
+                            (default: iface=CARD,name="Speaker Digital Gain")
+
+  -m, --min_dest double     This will be used as a starting value for the destination control when the source is at 1.
+                            If the source value is zero, the destination will always be zero too.
+                            (default: 90)
+
+  --src_hw string           Id of the source device.
+                            (default: hw:1)
+
+  --src_hw string           Id of the destination device.
+                            (default: the --src_hw value)
+
 ```
 
 # Usage
@@ -48,7 +66,7 @@ numid=3,iface=CARD,name='Speaker Digital Gain'
 ```
 The value of the monitored control will be scaled appropriatelly for the updated control. The maximum value of the source will always map to the maximum value of the destination. If the source value is zero the destination value will be set to zero too. If the destination control needs to start at a higher value then the third argument will allow this.
 
-So for example, running `alsa-controller name="Speaker Playback Volume" iface=CARD,name="Speaker Digital Gain" 90` will map the source `0,1..87` into destinations `0,90..200`
+So for example, running `alsa-controller -m 90` will map the source `0,1..87` into destinations `0,90..200`
 
 # Run as a service
 * copy to `/usr/loca/bin` or some other location

@@ -3,5 +3,5 @@ project(alsa-controller)
 include_directories(/usr/lib/x86_64-linux-gnu)
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(alsa-controller main.cpp)
+add_executable(alsa-controller main.cpp args.cpp args.h)
 target_link_libraries(alsa-controller libasound.so.2)
