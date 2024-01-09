@@ -11,13 +11,15 @@ On Ubuntu:
 ```
 sudo apt install cmake libasound2-dev
 ```
+On Fedora use `alsa-lib-devel`
+
 Build
 ```
-cmake .
+cmake . && make
 ```
 Test
 ```
-./cmake-build-release/alsa-controller -h
+./alsa-controller -h
 Usage:
   alsa-controller [flags]
 
